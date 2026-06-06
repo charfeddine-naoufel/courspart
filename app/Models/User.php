@@ -21,8 +21,22 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role'
     ];
+        public function isAdmin(): bool
+        {
+            return $this->role === 'admin';
+        }
 
+        public function isTeacher(): bool
+        {
+            return $this->role === 'teacher';
+        }
+
+        public function isStudent(): bool
+        {
+            return $this->role === 'student';
+        }
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -41,4 +55,30 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function teacherProfile()
+    {
+        return $this->hasOne(TeacherProfile::class);
+    }
+
+    public function studentProfile()
+    {
+        return $this->hasOne(StudentProfile::class);
+    }
+    public function bookingsAsStudent()
+    {
+        return $this->hasMany(
+            Booking::class,
+            'student_id'
+        );
+    }
+    
+    public function bookingsAsTeacher()
+    {
+        return $this->hasMany(
+            Booking::class,
+            'teacher_id'
+        );
+    }
+    
 }
